@@ -1,5 +1,15 @@
 from flask import Flask, request
 import uuid
+import psycopg2
+
+connection = psycopg2.connect(
+    host = "localhost",
+    user = "postgres",
+    database = "bookifyclub",
+    password = "Alex9"
+)
+
+
 app = Flask(__name__)
 books = []
 
