@@ -19,10 +19,15 @@ def create_book():
         return "book created successfully"
 
 
-#request book
+#GET ALL THE BOOKS CONTENT
 @app.get("/books")
 def get_books():
-    return books
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.GET_ALL_THE_BOOKS)
+            result = cursor.fetchall()
+        return f"THE BOOKS BELOW ARE ORDERED BY id, title and category [(id, 'title', 'category')]\n\n {result}"
+        
 
 
 #Update book
