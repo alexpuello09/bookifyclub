@@ -1,20 +1,9 @@
 from flask import Flask, request
 import uuid
-import psycopg2
-
-connection = psycopg2.connect(
-    host = "localhost",
-    user = "postgres",
-    database = "bookifyclub",
-    password = "Alex9"
-)
+import data.db as db
 
 app = Flask(__name__)
 books = []
-
-CREATE_BOOK_TABLE = ("CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))")
-INSERT_INTO_BOOK_TABLE = "INSERT INTO book (title, category) VALUES (%s, %s)"
-
 
 #CREATE BOOK
 @app.post('/books')
@@ -23,10 +12,10 @@ def create_book():
     title = data["title"]
     category = data["category"]
 
-    with connection:
-        with connection.cursor() as cursor:
-            cursor.execute(CREATE_BOOK_TABLE)
-            cursor.execute(INSERT_INTO_BOOK_TABLE, (title, category))
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.CREATE_BOOK_TABLE)
+            cursor.execute(db.INSERT_INTO_BOOK_TABLE, (title, category))
         return "book created successfully"
 
 
