@@ -9,27 +9,32 @@ connection = psycopg2.connect(
     password = "Alex9"
 )
 
-
 app = Flask(__name__)
 books = []
+
+CREATE_BOOK_TABLE = ("CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))")
+INSERT_INTO_BOOK_TABLE = "INSERT INTO book (title, category) VALUES (%s, %s)"
+
+
+#CREATE BOOK
+@app.post('/books')
+def create_book():
+    data = request.get_json() 
+    title = data["title"]
+    category = data["category"]
+
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(CREATE_BOOK_TABLE)
+            cursor.execute(INSERT_INTO_BOOK_TABLE, (title, category))
+        return "book created successfully"
+
 
 #request book
 @app.get("/books")
 def get_books():
     return books
 
-#Create book
-@app.post('/books')
-def create_book():
-    data = request.get_json()
-    id = str(uuid.uuid4())
-    new_book =  {
-        'id': id,
-        'name': data["name"],
-        'author': data["author"]
-    }
-    books.append(new_book)
-    return books
 
 #Update book
 @app.route('/books/<string:id_book>',methods = ['PUT'])
