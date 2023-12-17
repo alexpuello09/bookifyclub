@@ -26,8 +26,17 @@ def get_books():
         with db.connection.cursor() as cursor:
             cursor.execute(db.GET_ALL_THE_BOOKS)
             result = cursor.fetchall()
-        return f"THE BOOKS BELOW ARE ORDERED BY id, title and category [(id, 'title', 'category')]\n\n {result}"
+        return result
         
+
+#GET A BOOK BY ITS ID
+@app.get("/books/<int:id>")
+def get_book(id):
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.GET_A_BOOK, (id,))
+            result = cursor.fetchall()
+        return result
 
 
 #Update book

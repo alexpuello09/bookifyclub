@@ -12,3 +12,4 @@ CREATE_BOOK_TABLE = ("CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KE
 INSERT_INTO_BOOK_TABLE = "INSERT INTO book (title, category) VALUES (%s, %s)"
 
 GET_ALL_THE_BOOKS = ("SELECT * FROM book")
+GET_A_BOOK = ("SELECT * FROM book WHERE book_id = (%s)")
