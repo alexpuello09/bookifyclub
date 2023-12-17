@@ -35,26 +35,37 @@ def get_book(id):
     with db.connection:
         with db.connection.cursor() as cursor:
             cursor.execute(db.GET_A_BOOK, (id,))
-            result = cursor.fetchall()
-        return result
+            result = cursor.fetchone()
 
-
-#Update book
-@app.route('/books/<string:id_book>',methods = ['PUT'])
+            if result is not None:
+                return list(result)
+            else:
+                return f"Error: Book with id {id} not found", 404
+    
+#UPDATE A BOOK
+@app.put("/books/<int:id_book>")
 def book_update(id_book):
-    datos = request.get_json()
-    for book in books:
-        if book['id'] == id_book:
-            book['name'] = datos['name'],
-            book['author'] = datos['author']
-            return f" Book with id {id_book} updated successfully"
-    return f"Error: Book with id {id_book} not found"
+    data = request.get_json()
+    title = data["title"]
+    category = data["category"]
+
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.UPDATE_BOOK, (title, category, id_book))
+
+            if cursor.rowcount > 0:
+                return f"Book with id {id_book} updated successfully"
+            else:
+                return (f"Error: Book with id {id_book} not found"), 404
 
 #Delete book
-@app.route('/books/<string:id_book>',methods = ['DELETE'])
+@app.delete('/books/<int:id_book>')
 def book_delete(id_book):
-    for book in books:
-        if book['id'] == id_book:
-            books.remove(book)
-            return "Book deleted successfully"
-    return "Error: Book with that id not found"
+    with db.connection:
+        with db.connection.cursor() as cursor: 
+            cursor.execute(db.DELETE_BOOK, (id_book,))
+
+            if cursor.rowcount > 0:
+                return "book deleted successfully"
+            else:
+                return (f"Book with id {id_book} not found"), 404
