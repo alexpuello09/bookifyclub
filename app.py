@@ -1,5 +1,4 @@
 from flask import Flask, request
-import uuid
 import data.db as db
 
 app = Flask(__name__)
@@ -26,9 +25,13 @@ def get_books():
         with db.connection.cursor() as cursor:
             cursor.execute(db.GET_ALL_THE_BOOKS)
             result = cursor.fetchall()
-        return result
-        
+    
+            books_dict = []
+            for book in result:
+                books_dict.append({"id":book[0], "title": book[1], "category":book[2]})
+            return books_dict
 
+        
 #GET A BOOK BY ITS ID
 @app.get("/books/<int:id>")
 def get_book(id):
@@ -56,7 +59,7 @@ def book_update(id_book):
             if cursor.rowcount > 0:
                 return f"Book with id {id_book} updated successfully"
             else:
-                return (f"Error: Book with id {id_book} not found"), 404
+                return (f"Error 404: Book with id {id_book} not found"), 404
 
 #Delete book
 @app.delete('/books/<int:id_book>')
