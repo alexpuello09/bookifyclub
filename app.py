@@ -73,3 +73,17 @@ def book_delete(id_book):
                 return "book deleted successfully"
             else:
                 return (f"Book with id {id_book} not found"), 404
+
+#========================================================================================================
+
+#CREATE A CATEGORY
+@app.post('/category')
+def create_category():
+    data = request.get_json()
+    category_name = data["category_name"]
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.CREATE_CATEGORY_TABLE)
+            cursor.execute(db.INSERT_INTO_CATEGORY, (category_name,))
+        return "Category created successfully"
+
