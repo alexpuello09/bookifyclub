@@ -22,3 +22,4 @@ CREATE_CATEGORY_TABLE = ("CREATE TABLE IF NOT EXISTS category (category_id SERIA
 INSERT_INTO_CATEGORY = "INSERT INTO category (category_name) VALUES (%s)"
 
 SELECT_ALL_FROM_CATEGORY = ("SELECT * FROM category")
+SELECT_CATEGORY_BY_ID = ("SELECT * FROM category WHERE category_id = (%s)")

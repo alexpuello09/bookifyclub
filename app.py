@@ -100,3 +100,16 @@ def categories():
                 all_categories.append({"category_id": category[0], "category_name":category[1]})
             return all_categories
             
+#SELECT A CATEGORY BY ITS ID
+@app.get('/category/<int:id_category>')
+def get_category(id_category):
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.SELECT_CATEGORY_BY_ID, (id_category,))
+            
+            if cursor.rowcount > 0:
+                result_list = cursor.fetchone()
+                result_json = {"category_id": result_list[0], "category_name": result_list[1]}
+                return result_json, 200
+            else:
+                return(f"Category with id {id_category} does not exist"), 404
