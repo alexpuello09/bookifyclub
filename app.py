@@ -125,5 +125,16 @@ def update_category(id_category):
             if cursor.rowcount > 0:
                 return f"Category with id {id_category} was updated successfully", 200
             else:
-                return f"Category with id {id_category} does not exist"
+                return f"Category with id {id_category} does not exist",404
         
+#DELETE A CATEGORY
+@app.delete('/category/<int:id_category>')
+def remove_category(id_category):
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.DELETE_CATEGORY, (id_category,))
+            if cursor.rowcount > 0:
+                return f"Category with id {id_category} deleted", 200
+            
+            else:
+                return f"Category with id {id_category} does not exist", 404
