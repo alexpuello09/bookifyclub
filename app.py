@@ -41,7 +41,8 @@ def get_book(id):
             result = cursor.fetchone()
 
             if result is not None:
-                return list(result)
+                result_json = {"id": result[0], "title": result[1], "category": result[2]}
+                return (result_json)
             else:
                 return f"Error: Book with id {id} not found", 404
     
