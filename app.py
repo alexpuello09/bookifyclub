@@ -86,4 +86,17 @@ def create_category():
             cursor.execute(db.CREATE_CATEGORY_TABLE)
             cursor.execute(db.INSERT_INTO_CATEGORY, (category_name,))
         return "Category created successfully"
+    
 
+#SELECT ALL FROM CATEGORY
+@app.get('/category')
+def categories():
+    all_categories = []
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.SELECT_ALL_FROM_CATEGORY)
+            result = cursor.fetchall()
+            for category in result:
+                all_categories.append({"category_id": category[0], "category_name":category[1]})
+            return all_categories
+            
