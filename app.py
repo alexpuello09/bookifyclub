@@ -113,3 +113,17 @@ def get_category(id_category):
                 return result_json, 200
             else:
                 return(f"Category with id {id_category} does not exist"), 404
+            
+#UPDATE A CATEGORY
+@app.put('/category/<int:id_category>')
+def update_category(id_category):
+    data = request.get_json()
+    category_name = data["category_name"]
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.UPDATE_CATEGORY, (category_name, id_category))
+            if cursor.rowcount > 0:
+                return f"Category with id {id_category} was updated successfully", 200
+            else:
+                return f"Category with id {id_category} does not exist"
+        
