@@ -27,3 +27,9 @@ SELECT_CATEGORY_BY_ID = ("SELECT * FROM category WHERE category_id = (%s)")
 
 UPDATE_CATEGORY = "UPDATE category SET category_name = (%s) WHERE category_id = (%s)"
 DELETE_CATEGORY = ("DELETE FROM category WHERE category_id = %s")
+
+#USER
+#=====================================================================================================
+
+CREATE_USER = ("CREATE TABLE IF NOT EXISTS user_account (name VARCHAR(100), lastname VARCHAR(100), username VARCHAR(100), email VARCHAR(100), password VARCHAR(15), created_at TIMESTAMP, update_at TIMESTAMP, PRIMARY KEY (username, email))")
+INSER_INTO_USER = ("INSERT INTO user_account (name,  lastname, username, email, password , created_at) VALUES (%s, %s, %s, %s, %s, %s)")

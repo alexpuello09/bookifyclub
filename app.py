@@ -1,5 +1,8 @@
 from flask import Flask, request
 import data.db as db
+import jwt
+from cryptography.hazmat.primitives import serialization
+
 
 app = Flask(__name__)
 books = []
@@ -138,3 +141,34 @@ def remove_category(id_category):
             
             else:
                 return f"Category with id {id_category} does not exist", 404
+
+
+#========================================================================================================
+
+def jwt_converter(datos):
+    header = {
+    "alg": "HS256",
+    "typ": "JWT"
+    }
+    payload_data = datos
+    secret_key = "ThisIsthesecretkey"
+
+    token = jwt.encode( payload_data, secret_key, algorithm='HS256', headers=header)    
+    return token
+
+#CREATE_USER
+
+@app.post("/user")     
+def create_user():
+
+    data = request.get_json()
+    data_for_token = {"name": data["name"], "lastname": data["lastname"], "username": data["username"]}
+    
+    token = jwt_converter(data_for_token)
+    
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.CREATE_USER)
+            cursor.execute(db.INSER_INTO_USER, (data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"]))
+
+            return f"Account created Successfully And the jwt is \n{token}\n", 200
