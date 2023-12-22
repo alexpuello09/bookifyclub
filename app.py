@@ -200,7 +200,26 @@ def request_a_user(token):
             else:
                 return "Unauthorized access", 401
 
+
+@app.put("/user/<string:token>")
+def update_password(token):
+    token_authorization = token
+    data = request.get_json()
+    current_password = data["current_password"]
+    new_password = data["new_password"]
+    username = data["username"]
+    update_at = data["update_at"]
+
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.UPDATE_USER, (new_password, update_at, token, current_password, username,))
+            if cursor.rowcount > 0:
+                return "User updated successfully", 200
+            else:
+                return "Unauthorized access", 401
+
+
+
+
+
     
-
-            
-
