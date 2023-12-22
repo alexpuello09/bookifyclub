@@ -38,3 +38,4 @@ GET_ALL_USER = ("SELECT * FROM user_account")
 GET_A_USER = ("SELECT * FROM user_account WHERE token = %s")
 
 UPDATE_USER = ("UPDATE user_account SET password = (%s), update_at = (%s) WHERE token = (%s) AND password = (%s) AND username = (%s);")
+DELETE_USER = ("DELETE FROM user_account WHERE token = (%s)")

@@ -219,6 +219,17 @@ def update_password(token):
                 return "Unauthorized access", 401
 
 
+@app.delete("/user/<string:token>")
+def delete_user(token):
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.DELETE_USER, (token,))
+            if cursor.rowcount > 0:
+                return "User account delete successfully", 200
+            else:
+                return "Unauthorized access", 401
+
+
 
 
 
