@@ -172,3 +172,19 @@ def create_user():
             cursor.execute(db.INSER_INTO_USER, (data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"]))
 
             return f"Account created Successfully And the jwt is \n{token}\n", 200
+
+#GET ALL THE USERS
+
+@app.get("/user")
+def request_users():
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.GET_ALL_USER)
+            accounts = cursor.fetchall()
+            users = []
+
+            for user in accounts:
+                users.append({"name": user[0], "lastname": user[1], "username": user[2], "email": user[3], "password": user[4], "created_at": user[5]})
+            return users
+
+
