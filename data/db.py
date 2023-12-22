@@ -35,4 +35,5 @@ CREATE_USER = ("CREATE TABLE IF NOT EXISTS user_account (name VARCHAR(100), last
 INSER_INTO_USER = ("INSERT INTO user_account (name,  lastname, username, email, password , created_at, token) VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
 GET_ALL_USER = ("SELECT * FROM user_account")
+GET_A_USER = ("SELECT * FROM user_account WHERE token = %s")
 

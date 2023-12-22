@@ -186,5 +186,21 @@ def request_users():
             for user in accounts:
                 users.append({"name": user[0], "lastname": user[1], "username": user[2], "email": user[3], "password": user[4], "created_at": user[5]})
             return users
+
+@app.get("/user/<string:token>")
+def request_a_user(token):
+    with db.connection:
+        with db.connection.cursor() as cursor:
+            cursor.execute(db.GET_A_USER, (token,))
+            if cursor.rowcount > 0:
+                data = cursor.fetchone()
+                data_json = {"name": data[0], "lastname" : data[1], "username" : data[2], "email": data[3], "password": data[4], "created_at": data[5], "update_at": data[6]}
+                
+                return data_json, 200
+            else:
+                return "Unauthorized access", 401
+
+    
+
             
 
