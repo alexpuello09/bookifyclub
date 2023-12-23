@@ -144,7 +144,7 @@ def remove_category(id_category):
 
 
 #========================================================================================================
-
+#TOKEN GENERATOR
 def jwt_converter(datos):
     header = {
     "alg": "HS256",
@@ -157,7 +157,6 @@ def jwt_converter(datos):
     return token
 
 #CREATE_USER
-
 @app.post("/user")     
 def create_user():
 
@@ -174,7 +173,6 @@ def create_user():
             return f"Account created Successfully And the jwt is \n{token}\n", 200
 
 #GET ALL THE USERS
-
 @app.get("/user")
 def request_users():
     with db.connection:
@@ -187,6 +185,7 @@ def request_users():
                 users.append({"name": user[0], "lastname": user[1], "username": user[2], "email": user[3], "password": user[4], "created_at": user[5]})
             return users
 
+#GET A USER
 @app.get("/user/<string:token>")
 def request_a_user(token):
     with db.connection:
@@ -200,10 +199,9 @@ def request_a_user(token):
             else:
                 return "Unauthorized access", 401
 
-
+#UPDATE A USER
 @app.put("/user/<string:token>")
 def update_password(token):
-    token_authorization = token
     data = request.get_json()
     current_password = data["current_password"]
     new_password = data["new_password"]
@@ -218,7 +216,7 @@ def update_password(token):
             else:
                 return "Unauthorized access", 401
 
-
+#DELETE A USER
 @app.delete("/user/<string:token>")
 def delete_user(token):
     with db.connection:
@@ -229,8 +227,3 @@ def delete_user(token):
             else:
                 return "Unauthorized access", 401
 
-
-
-
-
-    
