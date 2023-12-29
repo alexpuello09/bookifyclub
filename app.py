@@ -170,7 +170,10 @@ def create_user():
             cursor.execute(db.CREATE_USER)
             cursor.execute(db.INSER_INTO_USER, (data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"], token))
 
-            return f"Account created Successfully And the jwt is \n{token}\n", 200
+            if cursor.rowcount > 0:
+                return f"Account created Successfully And the jwt is \n{token}\n", 200
+            else:
+                return f"something went wrong"
 
 #GET ALL THE USERS
 @app.get("/user")
