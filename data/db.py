@@ -1,10 +1,11 @@
 import psycopg2
 
 connection = psycopg2.connect(
-    host = "35.224.206.79",
-    user = "postgres",
-    database = "bookifyclub",
-    password = "Alex9"
+    host = "bookifyclub-database-1",
+    port = 5432,
+    user = "adminbookifyclub",
+    database = "bookifycore",
+    password = "CORE"
 )
 
 #BOOK
