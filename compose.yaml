@@ -1,0 +1,18 @@
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_USER: adminbookifyclub
+      POSTGRES_PASSWORD: CORE
+      POSTGRES_DB: bookifycore
+    ports:
+      - "5433:5432"
+
+  app:
+    build: .
+    ports:
+      - "5005:5000"
+    
+    volumes:
+      - .:/app
+
