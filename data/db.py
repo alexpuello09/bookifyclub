@@ -1,10 +1,11 @@
 import psycopg2
+import os
 
 connection = psycopg2.connect(
-    host = "bookifyclub-database-1",
+    host = os.environ.get('DB_HOST'),
     port = 5432,
-    user = "adminbookifyclub",
-    database = "bookifycore",
+    user = os.environ.get('DB_USER'),
+    database = os.environ.get('DB_NAME'),
     password = "CORE"
 )
 

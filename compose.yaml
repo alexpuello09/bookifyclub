@@ -5,13 +5,23 @@ services:
       POSTGRES_USER: adminbookifyclub
       POSTGRES_PASSWORD: CORE
       POSTGRES_DB: bookifycore
+      POSTGRES_HOST: bookifyclub-database-1
     ports:
       - "5433:5432"
+    
 
   app:
     build: .
+    environment:
+      DB_HOST: bookifyclub-database-1
+      DB_USER: adminbookifyclub
+      DB_NAME: bookifycore
+      
     ports:
       - "5005:5000"
+    depends_on:
+      database:
+        condition: service_started
     
     volumes:
       - .:/app
