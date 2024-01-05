@@ -1,20 +1,26 @@
 services:
   database:
     image: postgres
+    secrets:
+      - db_password
+      - db_user
+      - database
+      - db_host
     environment:
-      POSTGRES_USER: adminbookifyclub
-      POSTGRES_PASSWORD: CORE
-      POSTGRES_DB: bookifycore
-      POSTGRES_HOST: bookifyclub-database-1
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB_FILE: /run/secrets/database
+      POSTGRES_HOST_FILE: /run/secrets/db_host
     ports:
       - "5433:5432"
     
-
   app:
     build: .
+    secrets:
+      - db_user
     environment:
       DB_HOST: bookifyclub-database-1
-      DB_USER: adminbookifyclub
+      DB_USER: /run/secrets/db_user
       DB_NAME: bookifycore
       
     ports:
@@ -25,4 +31,14 @@ services:
     
     volumes:
       - .:/app
+
+secrets:
+  db_password:
+    file: db/password.txt
+  db_user:
+    file: db/user.txt
+  database:
+    file: db/database.txt
+  db_host:
+    file: db/host.txt
 
