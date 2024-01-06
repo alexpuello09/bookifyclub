@@ -1,19 +1,19 @@
 import psycopg2
 import os
 
-data_password = os.environ.get('DB_PASSWORD')
+data_password = os.environ.get('DB_PASSWORD_FILE')
 with open(data_password, 'r') as password:
     dbpassword = password.read()
 
-data_host = os.environ.get('DB_HOST')
+data_host = os.environ.get('DB_HOST_FILE')
 with open(data_host, 'r') as host:
      dbhost = host.read()
 
-data_name = os.environ.get('DB_NAME')
+data_name = os.environ.get('DB_NAME_FILE')
 with open(data_name, 'r') as name:
     dbname = name.read()
 
-data_user = os.environ.get('DB_USER')
+data_user = os.environ.get('DB_USER_FILE')
 with open(data_user, 'r') as user:
     dbuser = user.read()
 
