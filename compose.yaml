@@ -1,44 +1,35 @@
 services:
-  database:
+  db:
     image: postgres
     secrets:
-      - db_password
-      - db_user
-      - database
-      - db_host
+      - dbpassword
     environment:
-      POSTGRES_USER_FILE: /run/secrets/db_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-      POSTGRES_DB_FILE: /run/secrets/database
-      POSTGRES_HOST_FILE: /run/secrets/db_host
+      DB_USER: adminbookifyclub
+      DB_PASSWORD: /run/secrets/dbpassword
+      DB_NAME: bookifycore
+      DB_HOST: bookifyclub-db-1
     ports:
       - "5433:5432"
-    
+
   app:
     build: .
     secrets:
-      - db_user
+      - dbpassword
     environment:
-      DB_HOST: bookifyclub-database-1
-      DB_USER: /run/secrets/db_user
+      DB_HOST: bookifyclub-db-1
+      DB_USER: adminbookifyclub
       DB_NAME: bookifycore
-      
+      DB_PASSWORD: /run/secrets/dbpassword
+
     ports:
       - "5005:5000"
-    depends_on:
-      database:
-        condition: service_started
-    
+    #depends_on:
+     # db:
+      #  condition: service_started
+
     volumes:
       - .:/app
 
 secrets:
-  db_password:
-    file: db/password.txt
-  db_user:
-    file: db/user.txt
-  database:
-    file: db/database.txt
-  db_host:
-    file: db/host.txt
-
+  dbpassword:
+    file: secrets/db_password.txt

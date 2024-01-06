@@ -1,12 +1,16 @@
 import psycopg2
 import os
 
+data_password = os.environ.get('DB_PASSWORD')
+with open(data_password, 'r') as password:
+    dbpassword = password.read()
+
 connection = psycopg2.connect(
     host = os.environ.get('DB_HOST'),
     port = 5432,
     user = os.environ.get('DB_USER'),
     database = os.environ.get('DB_NAME'),
-    password = "CORE"
+    password = dbpassword
 )
 
 #BOOK
