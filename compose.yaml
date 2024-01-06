@@ -4,10 +4,11 @@ services:
     secrets:
       - dbpassword
       - dbhost
+      - dbname
     environment:
       DB_USER: adminbookifyclub
       DB_PASSWORD: /run/secrets/dbpassword
-      DB_NAME: bookifycore
+      DB_NAME: /run/secrets/dbname
       DB_HOST: /run/secrets/dbhost
     ports:
       - "5433:5432"
@@ -17,10 +18,11 @@ services:
     secrets:
       - dbpassword
       - dbhost
+      - dbname
     environment:
       DB_HOST: /run/secrets/dbhost
       DB_USER: adminbookifyclub
-      DB_NAME: bookifycore
+      DB_NAME: /run/secrets/dbname
       DB_PASSWORD: /run/secrets/dbpassword
 
     ports:
@@ -37,3 +39,5 @@ secrets:
     file: secrets/db_password.txt
   dbhost:
     file: secrets/db_host.txt
+  dbname:
+    file: secrets/db_name.txt

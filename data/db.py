@@ -9,11 +9,15 @@ data_host = os.environ.get('DB_HOST')
 with open(data_host, 'r') as host:
      dbhost = host.read()
 
+data_name = os.environ.get('DB_NAME')
+with open(data_name, 'r') as name:
+    dbname = name.read()
+
 connection = psycopg2.connect(
     host = dbhost,
     port = 5432,
     user = os.environ.get('DB_USER'),
-    database = os.environ.get('DB_NAME'),
+    database = dbname,
     password = dbpassword
 )
 
