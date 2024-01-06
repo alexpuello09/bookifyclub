@@ -5,8 +5,9 @@ services:
       - dbpassword
       - dbhost
       - dbname
+      - dbuser
     environment:
-      DB_USER: adminbookifyclub
+      DB_USER: /run/secrets/dbuser
       DB_PASSWORD: /run/secrets/dbpassword
       DB_NAME: /run/secrets/dbname
       DB_HOST: /run/secrets/dbhost
@@ -19,9 +20,10 @@ services:
       - dbpassword
       - dbhost
       - dbname
+      - dbuser
     environment:
       DB_HOST: /run/secrets/dbhost
-      DB_USER: adminbookifyclub
+      DB_USER: /run/secrets/dbuser
       DB_NAME: /run/secrets/dbname
       DB_PASSWORD: /run/secrets/dbpassword
 
@@ -41,3 +43,5 @@ secrets:
     file: secrets/db_host.txt
   dbname:
     file: secrets/db_name.txt
+  dbuser:
+    file: secrets/db_user.txt

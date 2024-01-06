@@ -13,10 +13,14 @@ data_name = os.environ.get('DB_NAME')
 with open(data_name, 'r') as name:
     dbname = name.read()
 
+data_user = os.environ.get('DB_USER')
+with open(data_user, 'r') as user:
+    dbuser = user.read()
+
 connection = psycopg2.connect(
     host = dbhost,
     port = 5432,
-    user = os.environ.get('DB_USER'),
+    user = dbuser,
     database = dbname,
     password = dbpassword
 )
