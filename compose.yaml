@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: bookifyclub-db
     image: postgres
     secrets:
       - dbpassword
@@ -15,6 +16,7 @@ services:
       - "5433:5432"
 
   app:
+    container_name: bookifyclub-app
     build: .
     secrets:
       - dbpassword
