@@ -3,11 +3,12 @@ services:
     image: postgres
     secrets:
       - dbpassword
+      - dbhost
     environment:
       DB_USER: adminbookifyclub
       DB_PASSWORD: /run/secrets/dbpassword
       DB_NAME: bookifycore
-      DB_HOST: bookifyclub-db-1
+      DB_HOST: /run/secrets/dbhost
     ports:
       - "5433:5432"
 
@@ -15,8 +16,9 @@ services:
     build: .
     secrets:
       - dbpassword
+      - dbhost
     environment:
-      DB_HOST: bookifyclub-db-1
+      DB_HOST: /run/secrets/dbhost
       DB_USER: adminbookifyclub
       DB_NAME: bookifycore
       DB_PASSWORD: /run/secrets/dbpassword
@@ -33,3 +35,5 @@ services:
 secrets:
   dbpassword:
     file: secrets/db_password.txt
+  dbhost:
+    file: secrets/db_host.txt
