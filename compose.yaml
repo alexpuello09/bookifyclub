@@ -8,10 +8,10 @@ services:
       - dbname
       - dbuser
     environment:
-      DB_USER_FILE: /run/secrets/dbuser
-      DB_PASSWORD_FILE: /run/secrets/dbpassword
-      DB_NAME_FILE: /run/secrets/dbname
-      DB_HOST_FILE: /run/secrets/dbhost
+      POSTGRES_USER_FILE: /run/secrets/dbuser
+      POSTGRES_PASSWORD_FILE: /run/secrets/dbpassword
+      POSTGRES_NAME_FILE: /run/secrets/dbname
+      POSTGRES_HOST_FILE: /run/secrets/dbhost
     ports:
       - "5433:5432"
 
@@ -28,12 +28,14 @@ services:
       DB_USER_FILE: /run/secrets/dbuser
       DB_NAME_FILE: /run/secrets/dbname
       DB_PASSWORD_FILE: /run/secrets/dbpassword
+      DEBUG: false
+
 
     ports:
       - "5005:5000"
-    #depends_on:
-     # db:
-      #  condition: service_started
+    depends_on:
+      db:
+        condition: service_started
 
     volumes:
       - .:/app
