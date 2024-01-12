@@ -1,51 +1,32 @@
-services:
-  db:
-    container_name: bookifyclub-db
-    image: postgres
-    secrets:
-      - dbpassword
-      - dbhost
-      - dbname
-      - dbuser
-    environment:
-      POSTGRES_USER_FILE: /run/secrets/dbuser
-      POSTGRES_PASSWORD_FILE: /run/secrets/dbpassword
-      POSTGRES_NAME_FILE: /run/secrets/dbname
-      POSTGRES_HOST_FILE: /run/secrets/dbhost
-    ports:
-      - "5433:5432"
+# services:
+#   db:
+#     container_name: bookifyclub-db
+#     image: postgres
 
-  app:
-    container_name: bookifyclub-app
-    build: .
-    secrets:
-      - dbpassword
-      - dbhost
-      - dbname
-      - dbuser
-    environment:
-      DB_HOST_FILE: /run/secrets/dbhost
-      DB_USER_FILE: /run/secrets/dbuser
-      DB_NAME_FILE: /run/secrets/dbname
-      DB_PASSWORD_FILE: /run/secrets/dbpassword
-      DEBUG: false
+#     environment:
+#       POSTGRES_USER: adminbookifyclub
+#       POSTGRES_PASSWORD: CORE
+#       POSTGRES_NAME: bookifycore
+#       POSTGRES_HOST: bookifyclub-db
+#     ports:
+#       - "5433:5432"
+
+#   app:
+#     container_name: bookifyclub-app
+
+#     environment:
+#       DB_HOST_FILE: /run/secrets/dbhost
+#       DB_USER_FILE: /run/secrets/dbuser
+#       DB_NAME_FILE: /run/secrets/dbname
+#       DB_PASSWORD_FILE: /run/secrets/dbpassword
+#       DEBUG: false
 
 
-    ports:
-      - "5005:5000"
-    depends_on:
-      db:
-        condition: service_started
+#     ports:
+#       - "5005:5000"
+#     depends_on:
+#       db:
+#         condition: service_started
 
-    volumes:
-      - .:/app
-
-secrets:
-  dbpassword:
-    file: secrets/db_password.txt
-  dbhost:
-    file: secrets/db_host.txt
-  dbname:
-    file: secrets/db_name.txt
-  dbuser:
-    file: secrets/db_user.txt
+#     volumes:
+#       - .:/app
