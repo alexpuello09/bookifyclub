@@ -1,29 +1,37 @@
-import psycopg2
 import os
+from google.cloud.sql.connector import Connector, IPTypes
+import pg8000
+import sqlalchemy
 
-data_password = os.environ.get('DB_PASSWORD_FILE')
-with open(data_password, 'r') as password:
-    dbpassword = password.read()
+def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
-data_host = os.environ.get('DB_HOST_FILE')
-with open(data_host, 'r') as host:
-     dbhost = host.read()
+    instance_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
+    db_pass = os.environ.get('DB_PASS')
+    db_name = os.environ.get('DB_NAME')
+    db_user = os.environ.get('DB_USER')
 
-data_name = os.environ.get('DB_NAME_FILE')
-with open(data_name, 'r') as name:
-    dbname = name.read()
+    ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
 
-data_user = os.environ.get('DB_USER_FILE')
-with open(data_user, 'r') as user:
-    dbuser = user.read()
+    connector = Connector()
 
-connection = psycopg2.connect(
-    host = dbhost,
-    port = 5432,
-    user = dbuser,
-    database = dbname,
-    password = dbpassword
-)
+    def getconn() -> pg8000.dbapi.Connection:
+        conn: pg8000.dbapi.Connection = connector.connect(
+            instance_connection_name,
+            "pg8000",
+            user=db_user,
+            password=db_pass,
+            db=db_name,
+            ip_type=ip_type,
+        )
+        return conn
+
+    pool = sqlalchemy.create_engine(
+        "postgresql+pg8000://",
+        creator=getconn,
+        # ...
+    )
+    return pool
+
 
 #BOOK
 CREATE_BOOK_TABLE = ("CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))")
