@@ -3,9 +3,8 @@ import data.db as db
 import jwt
 from cryptography.hazmat.primitives import serialization
 
-
+db.init_database()
 app = Flask(__name__)
-books = []
 
 #CREATE BOOK
 @app.post('/books')
@@ -14,11 +13,10 @@ def create_book():
     title = data["title"]
     category = data["category"]
 
-    with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.CREATE_BOOK_TABLE)
-            cursor.execute(db.INSERT_INTO_BOOK_TABLE, (title, category))
-        return "book created successfully"
+    with db.connection_pool.connect() as db_conn:
+        db_conn.execute(db.CREATE_BOOK_TABLE)
+        db_conn.execute(db.INSERT_INTO_BOOK_TABLE, parameters={"title": title, "category": category})
+    return "book created successfully"
 
 
 #GET ALL THE BOOKS CONTENT
