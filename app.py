@@ -36,19 +36,15 @@ def get_books():
 
 
 # GET A BOOK BY ITS ID
-@app.get("/books/<int:id>")
-def get_book(id):
-    with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.GET_A_BOOK, (id,))
-            result = cursor.fetchone()
-
-            if result is not None:
-                result_json = {"id": result[0], "title": result[1], "category": result[2]}
-                return (result_json)
-            else:
-                return f"Error: Book with id {id} not found", 404
-
+@app.get("/books/<int:id_row>")
+def get_book(id_row):
+    with db.connection_pool.connect() as db_conn:
+        result_row = db_conn.execute(db.GET_A_BOOK, parameters={"book_id": id_row}).fetchone()
+        if result_row is not None:
+            result_json = {"id": result_row[0], "title": result_row[1], "category": result_row[2]}
+            return json.dumps(result_json), 200
+        else:
+            return f"Error: Book with id {id_row} not found", 404
 
 # UPDATE A BOOK
 @app.put("/books/<int:id_book>")
