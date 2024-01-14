@@ -81,11 +81,10 @@ def book_delete(id_book):
 def create_category():
     data = request.get_json()
     category_name = data["category_name"]
-    with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.CREATE_CATEGORY_TABLE)
-            cursor.execute(db.INSERT_INTO_CATEGORY, (category_name,))
-        return "Category created successfully"
+    with db.connection_pool.connect() as db_conn:
+        db_conn.execute(db.CREATE_CATEGORY_TABLE)
+        db_conn.execute(db.INSERT_INTO_CATEGORY, (category_name,))
+    return "Category created successfully"
 
 
 # SELECT ALL FROM CATEGORY
@@ -93,9 +92,9 @@ def create_category():
 def categories():
     all_categories = []
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.SELECT_ALL_FROM_CATEGORY)
-            result = cursor.fetchall()
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.SELECT_ALL_FROM_CATEGORY)
+            result = db_conn.fetchall()
             for category in result:
                 all_categories.append({"category_id": category[0], "category_name": category[1]})
             return all_categories
@@ -105,11 +104,11 @@ def categories():
 @app.get('/category/<int:id_category>')
 def get_category(id_category):
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.SELECT_CATEGORY_BY_ID, (id_category,))
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.SELECT_CATEGORY_BY_ID, (id_category,))
 
-            if cursor.rowcount > 0:
-                result_list = cursor.fetchone()
+            if db_conn.rowcount > 0:
+                result_list = db_conn.fetchone()
                 result_json = {"category_id": result_list[0], "category_name": result_list[1]}
                 return result_json, 200
             else:
@@ -122,9 +121,9 @@ def update_category(id_category):
     data = request.get_json()
     category_name = data["category_name"]
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.UPDATE_CATEGORY, (category_name, id_category))
-            if cursor.rowcount > 0:
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.UPDATE_CATEGORY, (category_name, id_category))
+            if db_conn.rowcount > 0:
                 return f"Category with id {id_category} was updated successfully", 200
             else:
                 return f"Category with id {id_category} does not exist", 404
@@ -134,9 +133,9 @@ def update_category(id_category):
 @app.delete('/category/<int:id_category>')
 def remove_category(id_category):
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.DELETE_CATEGORY, (id_category,))
-            if cursor.rowcount > 0:
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.DELETE_CATEGORY, (id_category,))
+            if db_conn.rowcount > 0:
                 return f"Category with id {id_category} deleted", 200
 
             else:
@@ -166,13 +165,13 @@ def create_user():
     token = jwt_converter(data_for_token)
 
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.CREATE_USER)
-            cursor.execute(db.INSER_INTO_USER, (
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.CREATE_USER)
+            db_conn.execute(db.INSER_INTO_USER, (
                 data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"],
                 token))
 
-            if cursor.rowcount > 0:
+            if db_conn.rowcount > 0:
                 return f"Account created Successfully And the jwt is \n{token}\n", 200
             else:
                 return f"something went wrong"
@@ -182,9 +181,9 @@ def create_user():
 @app.get("/user")
 def request_users():
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.GET_ALL_USER)
-            accounts = cursor.fetchall()
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.GET_ALL_USER)
+            accounts = db_conn.fetchall()
             users = []
 
             for user in accounts:
@@ -198,10 +197,10 @@ def request_users():
 @app.get("/user/<string:token>")
 def request_a_user(token):
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.GET_A_USER, (token,))
-            if cursor.rowcount > 0:
-                data = cursor.fetchone()
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.GET_A_USER, (token,))
+            if db_conn.rowcount > 0:
+                data = db_conn.fetchone()
                 data_json = {"name": data[0], "lastname": data[1], "username": data[2], "email": data[3],
                              "password": data[4], "created_at": data[5], "update_at": data[6]}
 
@@ -220,9 +219,9 @@ def update_password(token):
     update_at = data["update_at"]
 
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.UPDATE_USER, (new_password, update_at, token, current_password, username,))
-            if cursor.rowcount > 0:
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.UPDATE_USER, (new_password, update_at, token, current_password, username,))
+            if db_conn.rowcount > 0:
                 return "User updated successfully", 200
             else:
                 return "Unauthorized access", 401
@@ -232,9 +231,9 @@ def update_password(token):
 @app.delete("/user/<string:token>")
 def delete_user(token):
     with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.DELETE_USER, (token,))
-            if cursor.rowcount > 0:
+        with db.connection_pool.connect() as db_conn:
+            db_conn.execute(db.DELETE_USER, (token,))
+            if db_conn.rowcount > 0:
                 return "User account delete successfully", 200
             else:
                 return "Unauthorized access", 401
