@@ -3,39 +3,43 @@ from google.cloud.sql.connector import Connector, IPTypes
 import pg8000
 import sqlalchemy
 
-def connect_with_connector() -> sqlalchemy.engine.base.Engine:
+connection_pool=None
 
+def init_database():
+    global connection_pool
     instance_connection_name = os.environ.get('INSTANCE_CONNECTION_NAME')
     db_pass = os.environ.get('DB_PASS')
     db_name = os.environ.get('DB_NAME')
     db_user = os.environ.get('DB_USER')
 
     ip_type = IPTypes.PRIVATE if os.environ.get("PRIVATE_IP") else IPTypes.PUBLIC
-
     connector = Connector()
 
-    def getconn() -> pg8000.dbapi.Connection:
-        conn: pg8000.dbapi.Connection = connector.connect(
-            instance_connection_name,
-            "pg8000",
-            user=db_user,
-            password=db_pass,
-            db=db_name,
-            ip_type=ip_type,
+    connection_creator = lambda :connector.connect(
+        instance_connection_name,
+        "pg8000",
+        user=db_user,
+        password=db_pass,
+        db=db_name,
+        ip_type=ip_type
         )
-        return conn
 
-    pool = sqlalchemy.create_engine(
-        "postgresql+pg8000://",
-        creator=getconn,
-        # ...
-    )
-    return pool
+    connection_pool = sqlalchemy.create_engine(
+    "postgresql+pg8000://",
+    creator=connection_creator)
+
+
 
 
 #BOOK
-CREATE_BOOK_TABLE = ("CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))")
-INSERT_INTO_BOOK_TABLE = "INSERT INTO book (title, category) VALUES (%s, %s)"
+
+CREATE_BOOK_TABLE = sqlalchemy.text(
+"CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))"
+)
+
+INSERT_INTO_BOOK_TABLE = sqlalchemy.text(
+    "INSERT INTO book (title, category) VALUES (:title, :category)"
+)
 
 GET_ALL_THE_BOOKS = ("SELECT * FROM book")
 GET_A_BOOK = ("SELECT * FROM book WHERE book_id = (%s)")
