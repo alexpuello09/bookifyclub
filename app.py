@@ -53,15 +53,13 @@ def book_update(id_book):
     title = data["title"]
     category = data["category"]
 
-    with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.UPDATE_BOOK, (title, category, id_book))
-
-            if cursor.rowcount > 0:
-                return f"Book with id {id_book} updated successfully"
-            else:
-                return (f"Error 404: Book with id {id_book} not found"), 404
-
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.UPDATE_BOOK, parameters={"title": title, "category":category, "book_id":id_book})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return f"Book with id {id_book} updated successfully", 200
+        else:
+            return f"Error 404: Book with id {id_book} not found", 404
 
 # Delete book
 @app.delete('/books/<int:id_book>')
