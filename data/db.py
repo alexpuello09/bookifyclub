@@ -51,7 +51,9 @@ GET_A_BOOK = sqlalchemy.text(
 UPDATE_BOOK = sqlalchemy.text(
     "UPDATE book SET title = :title, category = :category WHERE book_id = :book_id"
 )
-DELETE_BOOK = ("DELETE FROM book WHERE book_id = %s")
+DELETE_BOOK = sqlalchemy.text(
+    "DELETE FROM book WHERE book_id = :id_book"
+)
 
 # =====================================================================================================
 # CATEGORY

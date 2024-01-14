@@ -30,9 +30,8 @@ def get_books():
         result = db_conn.execute(db.GET_ALL_THE_BOOKS).fetchall()
         books_dict = []
         for row in result:
-            books_dict.append({"id":row[0], "title": row[1], "category":row[2]})
+            books_dict.append({"id": row[0], "title": row[1], "category": row[2]})
         return json.dumps(books_dict)
-
 
 
 # GET A BOOK BY ITS ID
@@ -46,6 +45,7 @@ def get_book(id_row):
         else:
             return f"Error: Book with id {id_row} not found", 404
 
+
 # UPDATE A BOOK
 @app.put("/books/<int:id_book>")
 def book_update(id_book):
@@ -54,24 +54,24 @@ def book_update(id_book):
     category = data["category"]
 
     with db.connection_pool.connect() as db_conn:
-        result = db_conn.execute(db.UPDATE_BOOK, parameters={"title": title, "category":category, "book_id":id_book})
+        result = db_conn.execute(db.UPDATE_BOOK, parameters={"title": title, "category": category, "book_id": id_book})
         db_conn.commit()
         if result.rowcount > 0:
             return f"Book with id {id_book} updated successfully", 200
         else:
             return f"Error 404: Book with id {id_book} not found", 404
 
+
 # Delete book
 @app.delete('/books/<int:id_book>')
 def book_delete(id_book):
-    with db.connection:
-        with db.connection.cursor() as cursor:
-            cursor.execute(db.DELETE_BOOK, (id_book,))
-
-            if cursor.rowcount > 0:
-                return "book deleted successfully"
-            else:
-                return (f"Book with id {id_book} not found"), 404
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.DELETE_BOOK, parameters={"id_book": id_book})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return "book deleted successfully", 200
+        else:
+            return f"Book with id {id_book} not found", 404
 
 
 # ========================================================================================================
@@ -169,8 +169,8 @@ def create_user():
         with db.connection.cursor() as cursor:
             cursor.execute(db.CREATE_USER)
             cursor.execute(db.INSER_INTO_USER, (
-            data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"],
-            token))
+                data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"],
+                token))
 
             if cursor.rowcount > 0:
                 return f"Account created Successfully And the jwt is \n{token}\n", 200
