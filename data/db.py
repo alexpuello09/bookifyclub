@@ -37,11 +37,15 @@ CREATE_BOOK_TABLE = sqlalchemy.text(
 "CREATE TABLE IF NOT EXISTS book (book_id SERIAL PRIMARY KEY, title VARCHAR(150), category VARCHAR(150))"
 )
 
+
 INSERT_INTO_BOOK_TABLE = sqlalchemy.text(
     "INSERT INTO book (title, category) VALUES (:title, :category)"
 )
 
-GET_ALL_THE_BOOKS = ("SELECT * FROM book")
+GET_ALL_THE_BOOKS = sqlalchemy.text(
+    "SELECT * FROM book"
+    )
+    
 GET_A_BOOK = ("SELECT * FROM book WHERE book_id = (%s)")
 
 UPDATE_BOOK = ("UPDATE book SET title = %s, category = %s WHERE book_id = %s")
