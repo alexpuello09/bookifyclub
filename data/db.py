@@ -46,7 +46,9 @@ GET_ALL_THE_BOOKS = sqlalchemy.text(
     "SELECT * FROM book"
     )
     
-GET_A_BOOK = ("SELECT * FROM book WHERE book_id = (%s)")
+GET_A_BOOK = sqlalchemy.text(
+    "SELECT * FROM book WHERE book_id = :book_id"
+)
 
 UPDATE_BOOK = ("UPDATE book SET title = %s, category = %s WHERE book_id = %s")
 DELETE_BOOK = ("DELETE FROM book WHERE book_id = %s")
