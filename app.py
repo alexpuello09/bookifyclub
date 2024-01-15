@@ -209,13 +209,13 @@ def update_password(token):
     username = data["username"]
     update_at = data["update_at"]
 
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.UPDATE_USER, (new_password, update_at, token, current_password, username,))
-            if db_conn.rowcount > 0:
-                return "User updated successfully", 200
-            else:
-                return "Unauthorized access", 401
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.UPDATE_USER, parameters= {"password": new_password, "update_at": update_at, "token":token, "current_password": current_password, "username": username})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return "User updated successfully", 200
+        else:
+            return "Unauthorized access", 401
 
 
 # DELETE A USER
