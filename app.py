@@ -170,19 +170,17 @@ def create_user():
             return f"Something went bad, check your credentials and try again"
 
 # GET ALL THE USERS
-@app.get("/user")
+@app.get("/accounts")
 def request_users():
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.GET_ALL_USER)
-            accounts = db_conn.fetchall()
-            users = []
+    with db.connection_pool.connect() as db_conn:
+        accounts = db_conn.execute(db.GET_ALL_USER).fetchall()
+        accounts_list = []
 
-            for user in accounts:
-                users.append(
-                    {"name": user[0], "lastname": user[1], "username": user[2], "email": user[3], "password": user[4],
-                     "created_at": user[5]})
-            return users
+        for user in accounts:
+            accounts_list.append(
+                {"name": user[0], "lastname": user[1], "username": user[2], "email": user[3], "password": user[4],
+                 "created_at": user[5]})
+        return accounts_list, 200
 
 
 # GET A USER
