@@ -92,14 +92,11 @@ def create_category():
 @app.get('/category')
 def categories():
     all_categories = []
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.SELECT_ALL_FROM_CATEGORY)
-            result = db_conn.fetchall()
-            for category in result:
-                all_categories.append({"category_id": category[0], "category_name": category[1]})
-            return all_categories
-
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.SELECT_ALL_FROM_CATEGORY).fetchall()
+        for category in result:
+            all_categories.append({"category_id": category[0], "category_name": category[1]})
+        return json.dumps(all_categories)
 
 # SELECT A CATEGORY BY ITS ID
 @app.get('/category/<int:id_category>')
