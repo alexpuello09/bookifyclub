@@ -101,17 +101,15 @@ def categories():
 # SELECT A CATEGORY BY ITS ID
 @app.get('/category/<int:id_category>')
 def get_category(id_category):
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.SELECT_CATEGORY_BY_ID, (id_category,))
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.SELECT_CATEGORY_BY_ID, parameters= {"id": id_category}).fetchone()
+        db_conn.commit()
 
-            if db_conn.rowcount > 0:
-                result_list = db_conn.fetchone()
-                result_json = {"category_id": result_list[0], "category_name": result_list[1]}
-                return result_json, 200
-            else:
-                return (f"Category with id {id_category} does not exist"), 404
-
+        if result is not None:
+            result_json = {"category_id": result[0], "category_name": result[1]}
+            return json.dumps(result_json), 200
+        else:
+            return f"Category with id {id_category} does not exist", 404
 
 # UPDATE A CATEGORY
 @app.put('/category/<int:id_category>')

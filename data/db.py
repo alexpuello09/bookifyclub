@@ -67,7 +67,9 @@ INSERT_INTO_CATEGORY = sqlalchemy.text(
 
 SELECT_ALL_FROM_CATEGORY = sqlalchemy.text("SELECT * FROM category")
 
-SELECT_CATEGORY_BY_ID = ("SELECT * FROM category WHERE category_id = (%s)")
+SELECT_CATEGORY_BY_ID = sqlalchemy.text(
+    "SELECT * FROM category WHERE category_id = :id"
+)
 
 UPDATE_CATEGORY = "UPDATE category SET category_name = (%s) WHERE category_id = (%s)"
 DELETE_CATEGORY = ("DELETE FROM category WHERE category_id = %s")
