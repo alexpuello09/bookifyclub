@@ -71,7 +71,9 @@ SELECT_CATEGORY_BY_ID = sqlalchemy.text(
     "SELECT * FROM category WHERE category_id = :id"
 )
 
-UPDATE_CATEGORY = "UPDATE category SET category_name = (%s) WHERE category_id = (%s)"
+UPDATE_CATEGORY = sqlalchemy.text(
+    "UPDATE category SET category_name = :name WHERE category_id = :id"
+)
 DELETE_CATEGORY = ("DELETE FROM category WHERE category_id = %s")
 
 # USER

@@ -116,13 +116,13 @@ def get_category(id_category):
 def update_category(id_category):
     data = request.get_json()
     category_name = data["category_name"]
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.UPDATE_CATEGORY, (category_name, id_category))
-            if db_conn.rowcount > 0:
-                return f"Category with id {id_category} was updated successfully", 200
-            else:
-                return f"Category with id {id_category} does not exist", 404
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.UPDATE_CATEGORY, parameters= {"name": category_name , "id": id_category})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return f"Category with id {id_category} was updated successfully", 200
+        else:
+            return f"Category with id {id_category} does not exist", 404
 
 
 # DELETE A CATEGORY
