@@ -92,7 +92,9 @@ INSERT_INTO_USER = sqlalchemy.text(
 GET_ALL_USER = sqlalchemy.text(
     "SELECT * FROM user_account"
 )
-GET_A_USER = ("SELECT * FROM user_account WHERE token = %s")
+GET_A_USER = sqlalchemy.text(
+    "SELECT * FROM user_account WHERE token = :Token"
+)
 
 UPDATE_USER = (
     "UPDATE user_account SET password = (%s), update_at = (%s) WHERE token = (%s) AND password = (%s) AND username = (%s);")

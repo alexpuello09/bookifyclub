@@ -186,17 +186,18 @@ def request_users():
 # GET A USER
 @app.get("/user/<string:token>")
 def request_a_user(token):
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.GET_A_USER, (token,))
-            if db_conn.rowcount > 0:
-                data = db_conn.fetchone()
-                data_json = {"name": data[0], "lastname": data[1], "username": data[2], "email": data[3],
-                             "password": data[4], "created_at": data[5], "update_at": data[6]}
+    with db.connection_pool.connect() as db_conn:
+        data_result = db_conn.execute(db.GET_A_USER, parameters = {"Token": token}).fetchone()
+        db_conn.commit()
 
-                return data_json, 200
-            else:
-                return "Unauthorized access", 401
+        if data_result is not None:
+            data_json = {"name": data_result[0], "lastname": data_result[1], "username": data_result[2], "email": data_result[3],
+                         "password": data_result[4], "created_at": data_result[5], "update_at": data_result[6]}
+
+            return data_json, 200
+        else:
+            return "Unauthorized access", 401
+
 
 
 # UPDATE A USER
