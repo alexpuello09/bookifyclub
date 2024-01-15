@@ -137,17 +137,16 @@ def remove_category(id_category):
 
 # ========================================================================================================
 # TOKEN GENERATOR
-def jwt_converter(datos):
+def jwt_converter(data):
     header = {
         "alg": "HS256",
         "typ": "JWT"
     }
-    payload_data = datos
-    secret_key = "ThisIsthesecretkey"
+    payload_data = data
+    secret_key = "ThisIsTheSecretKey"
 
     token = jwt.encode(payload_data, secret_key, algorithm='HS256', headers=header)
     return token
-
 
 # CREATE_USER
 @app.post("/user")
@@ -157,18 +156,18 @@ def create_user():
 
     token = jwt_converter(data_for_token)
 
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.CREATE_USER)
-            db_conn.execute(db.INSER_INTO_USER, (
-                data["name"], data["lastname"], data["username"], data["email"], data["password"], data["created_at"],
-                token))
+    with db.connection_pool.connect() as db_conn:
+        db_conn.execute(db.CREATE_USER)
 
-            if db_conn.rowcount > 0:
-                return f"Account created Successfully And the jwt is \n{token}\n", 200
-            else:
-                return f"something went wrong"
+        result = db_conn.execute(db.INSERT_INTO_USER, parameters = {
+            "name": data["name"], "lastname": data["lastname"], "username": data["username"], "email": data["email"], "password": data["password"], "created_at": data["created_at"],
+            "token": token})
+        db_conn.commit()
 
+        if result.rowcount > 0:
+            return f"Account created Successfully, Your authentication token is \n{token}\n", 200
+        else:
+            return f"Something went bad, check your credentials and try again"
 
 # GET ALL THE USERS
 @app.get("/user")
