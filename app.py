@@ -124,19 +124,16 @@ def update_category(id_category):
         else:
             return f"Category with id {id_category} does not exist", 404
 
-
 # DELETE A CATEGORY
 @app.delete('/category/<int:id_category>')
 def remove_category(id_category):
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.DELETE_CATEGORY, (id_category,))
-            if db_conn.rowcount > 0:
-                return f"Category with id {id_category} deleted", 200
-
-            else:
-                return f"Category with id {id_category} does not exist", 404
-
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.DELETE_CATEGORY, parameters = {"id": id_category})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return f"Category with id {id_category} deleted", 200
+        else:
+            return f"Category with id {id_category} does not exist", 404
 
 # ========================================================================================================
 # TOKEN GENERATOR
