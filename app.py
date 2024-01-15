@@ -83,8 +83,9 @@ def create_category():
     category_name = data["category_name"]
     with db.connection_pool.connect() as db_conn:
         db_conn.execute(db.CREATE_CATEGORY_TABLE)
-        db_conn.execute(db.INSERT_INTO_CATEGORY, (category_name,))
-    return "Category created successfully"
+        db_conn.execute(db.INSERT_INTO_CATEGORY, parameters= {"category_name": category_name})
+        db_conn.commit()
+    return "Category created successfully", 200
 
 
 # SELECT ALL FROM CATEGORY

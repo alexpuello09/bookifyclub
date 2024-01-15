@@ -57,9 +57,13 @@ DELETE_BOOK = sqlalchemy.text(
 
 # =====================================================================================================
 # CATEGORY
-CREATE_CATEGORY_TABLE = (
-    "CREATE TABLE IF NOT EXISTS category (category_id SERIAL PRIMARY KEY, category_name VARCHAR(150))")
-INSERT_INTO_CATEGORY = "INSERT INTO category (category_name) VALUES (%s)"
+CREATE_CATEGORY_TABLE = sqlalchemy.text(
+    "CREATE TABLE IF NOT EXISTS category (category_id SERIAL PRIMARY KEY, category_name VARCHAR(150))"
+)
+
+INSERT_INTO_CATEGORY = sqlalchemy.text(
+    "INSERT INTO category (category_name) VALUES (:category_name)"
+                        )
 
 SELECT_ALL_FROM_CATEGORY = ("SELECT * FROM category")
 SELECT_CATEGORY_BY_ID = ("SELECT * FROM category WHERE category_id = (%s)")
