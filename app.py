@@ -221,10 +221,10 @@ def update_password(token):
 # DELETE A USER
 @app.delete("/user/<string:token>")
 def delete_user(token):
-    with db.connection:
-        with db.connection_pool.connect() as db_conn:
-            db_conn.execute(db.DELETE_USER, (token,))
-            if db_conn.rowcount > 0:
-                return "User account delete successfully", 200
-            else:
-                return "Unauthorized access", 401
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.DELETE_USER, parameters= {"token":token})
+        db_conn.commit()
+        if result.rowcount > 0:
+            return "User account delete successfully", 200
+        else:
+            return "Unauthorized access", 401

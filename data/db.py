@@ -101,5 +101,6 @@ UPDATE_USER = sqlalchemy.text(
 )
 
 
-DELETE_USER = ("DELETE FROM user_account WHERE token = (%s)"
+DELETE_USER = sqlalchemy.text(
+    "DELETE FROM user_account WHERE token = :token"
                )
