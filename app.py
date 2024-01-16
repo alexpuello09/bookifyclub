@@ -184,8 +184,10 @@ def request_users():
 
 
 # GET A USER
-@app.get("/user/<string:token>")
-def request_a_user(token):
+@app.get("/user")
+def request_a_user():
+    data = request.headers.get('Authorization')
+    token = data.split(' ')[1]
     with db.connection_pool.connect() as db_conn:
         data_result = db_conn.execute(db.GET_A_USER, parameters = {"Token": token}).fetchone()
         db_conn.commit()
@@ -199,15 +201,16 @@ def request_a_user(token):
             return "Unauthorized access", 401
 
 
-
 # UPDATE A USER
-@app.put("/user/<string:token>")
-def update_password(token):
+@app.put("/user")
+def update_password():
     data = request.get_json()
     current_password = data["current_password"]
     new_password = data["new_password"]
     username = data["username"]
     update_at = data["update_at"]
+    data_token = request.headers.get('Authorization')
+    token = data_token.split(' ')[1]
 
     with db.connection_pool.connect() as db_conn:
         result = db_conn.execute(db.UPDATE_USER, parameters= {"password": new_password, "update_at": update_at, "token":token, "current_password": current_password, "username": username})
@@ -219,8 +222,11 @@ def update_password(token):
 
 
 # DELETE A USER
-@app.delete("/user/<string:token>")
-def delete_user(token):
+@app.delete("/user")
+def delete_user():
+    data = request.headers.get('Authorization')
+    token = data.split(' ')[1]
+    print(token)
     with db.connection_pool.connect() as db_conn:
         result = db_conn.execute(db.DELETE_USER, parameters= {"token":token})
         db_conn.commit()
