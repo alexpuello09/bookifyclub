@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import data.db as db
 import jwt
+from datetime import datetime, timedelta
 import json
 import sqlalchemy
 from cryptography.hazmat.primitives import serialization
@@ -234,3 +235,35 @@ def delete_user():
             return "User account delete successfully", 200
         else:
             return "Unauthorized access", 401
+
+#User_Login
+@app.post('/login')
+def user_login():
+    def token_creator(user, passw):
+        header = {
+            "alg": "HS256",
+            "typ": "JWT",
+            "exp": (datetime.utcnow() + timedelta(days=1)).isoformat()
+        }
+
+        payload = {"username": user, "password": passw}
+        secret_key = "ThisIsTheSecretKey"
+
+        token = jwt.encode(payload, secret_key, algorithm='HS256', headers=header)
+        return token
+
+    data = request.get_json()
+    username =  data['username']
+    password = data['password']
+    with db.connection_pool.connect() as db_conn:
+        result = db_conn.execute(db.USER_LOGIN, parameters = {"pass": password, "user": username})
+        db_conn.commit()
+        if result.rowcount > 0:
+            #Make and change the JWT
+            token_created = token_creator(user=username, passw=password)
+            with db.connection_pool.connect() as db_connection:
+                db_connection.execute(db.ADD_TOKEN, parameters= {"token": token_created, "user": username, "pass": password})
+                db_connection.commit()
+                return f"Successful login. Your authentication token is\n\n\t{token_created}", 200
+        else:
+            return "Unauthorized: Invalid username or password.", 401

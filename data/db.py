@@ -103,4 +103,11 @@ UPDATE_USER = sqlalchemy.text(
 
 DELETE_USER = sqlalchemy.text(
     "DELETE FROM user_account WHERE token = :token"
-               )
+)
+
+USER_LOGIN = sqlalchemy.text(
+    "SELECT * FROM user_account WHERE password = :pass and username = :user"
+)
+ADD_TOKEN = sqlalchemy.text(
+    "UPDATE user_account SET token = :token WHERE username= :user and password = :pass "
+)
